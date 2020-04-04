@@ -9,4 +9,6 @@ public interface EventRepository {
 	public void save(Event event);
 
 	public List<Event> findAll();
+
+	Event findById(String id);
 }

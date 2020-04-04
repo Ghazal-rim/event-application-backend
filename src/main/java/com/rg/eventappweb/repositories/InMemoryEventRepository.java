@@ -25,4 +25,9 @@ public class InMemoryEventRepository implements EventRepository {
 
 	}
 
+	@Override
+	public Event findById(String id) {
+		return eventList.stream().filter(event -> event.getId().equals(id)).findFirst().orElse(new Event());
+	}
+
 }
