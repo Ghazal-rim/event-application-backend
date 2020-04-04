@@ -3,6 +3,7 @@ package com.rg.eventappweb.services;
 
 
 import com.rg.eventappweb.models.Event;
+import com.rg.eventappweb.models.Guest;
 import com.rg.eventappweb.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +30,16 @@ public class EventService {
 	public void setEventRepository(EventRepository eventRepository) {
 		this.eventRepository = eventRepository;
 	}
+
+	public void addGuest(String id, Guest guest) {
+		Event event = eventRepository.findById(id);
+		event.addGuest(guest);
+		eventRepository.save(event);
+	}
+
+
+
+
 	
 	
 }

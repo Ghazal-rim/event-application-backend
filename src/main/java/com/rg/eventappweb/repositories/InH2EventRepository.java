@@ -22,4 +22,10 @@ public class  InH2EventRepository implements EventRepository {
 	public List<Event> findAll() {
 		return jpaEventRepository.findAll();
 	}
+
+	@Override
+	public Event findById(String id) {
+		//TODO : THROW EXCEPTIN IF EVENT NOT FOUND
+		return jpaEventRepository.findById(id).orElse(new Event());
+	}
 }

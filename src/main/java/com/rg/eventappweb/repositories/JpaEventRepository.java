@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface JpaEventRepository extends CrudRepository<Event, Long> {
+public interface JpaEventRepository extends CrudRepository<Event, String> {
 
     List<Event> findAll();
 }
