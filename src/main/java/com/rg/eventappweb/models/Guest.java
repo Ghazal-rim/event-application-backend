@@ -1,12 +1,9 @@
 package com.rg.eventappweb.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.UUID;
 
-@Entity
 public class Guest {
-    @Id
+
     private String id;
     private String email;
 
@@ -32,6 +29,10 @@ public class Guest {
     public String getId() {
         return id;
     }
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
 
     @Override
