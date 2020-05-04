@@ -2,8 +2,11 @@ package com.rg.eventappweb.controller;
 
 import com.rg.eventappweb.models.Event;
 import com.rg.eventappweb.models.Guest;
+import com.rg.eventappweb.models.User;
 import com.rg.eventappweb.services.EventService;
 import com.rg.eventappweb.services.GuestService;
+import com.rg.eventappweb.services.UserService;
+import org.apache.catalina.startup.Tomcat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
+    private UserService userService;
 
 
     @GetMapping(value = "/events")
@@ -40,10 +44,12 @@ public class EventController {
        Event event = eventService.invite(eventId,guestId);
        return ResponseEntity.ok(event);
     }
-
-
-
-
+    @GetMapping("/headers")
+    public ResponseEntity<String> getHeader(@RequestHeader("profile") String profile) {
+        // code that uses the User variable
+        User user = userService.addUser(profile);
+        return ResponseEntity.ok(profile);
+    }
 
 
 }
