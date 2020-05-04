@@ -1,17 +1,17 @@
 package com.rg.eventappweb.controller;
 
 import com.rg.eventappweb.models.Event;
-import com.rg.eventappweb.models.Guest;
-import com.rg.eventappweb.models.User;
+import com.rg.eventappweb.models.UserDetails;
 import com.rg.eventappweb.services.EventService;
-import com.rg.eventappweb.services.GuestService;
-import com.rg.eventappweb.services.UserService;
-import org.apache.catalina.startup.Tomcat;
+import com.rg.eventappweb.services.UserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -20,7 +20,9 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
-    private UserService userService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
 
     @GetMapping(value = "/events")
@@ -33,23 +35,35 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.get(id));
     }
 
+    // TODO IMPLEMENT SECURITY USING FILTER
     @PostMapping(value = "/events")
-    public ResponseEntity<Event> create(@RequestBody Event event) {
-       Event eventCreated = eventService.add(event);
-       return ResponseEntity.status(HttpStatus.CREATED).body(eventCreated);
+    public ResponseEntity<Event> create(@RequestBody Event event, HttpServletRequest request) {
+        UserDetails userDetails = getUserDetails(request);
+        if (isAutenticated(userDetails)) {
+            Event eventCreated = eventService.add(event);
+            return ResponseEntity.status(HttpStatus.CREATED).body(eventCreated);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+
+
+
 
     @PostMapping("/events/{eventId}/invite/{guestId}")
-    public ResponseEntity<Event> invite(@PathVariable String eventId, @PathVariable String guestId) {
-       Event event = eventService.invite(eventId,guestId);
-       return ResponseEntity.ok(event);
-    }
-    @GetMapping("/headers")
-    public ResponseEntity<String> getHeader(@RequestHeader("profile") String profile) {
-        // code that uses the User variable
-        User user = userService.addUser(profile);
-        return ResponseEntity.ok(profile);
+    public ResponseEntity<Event> invite(@PathVariable String eventId, @PathVariable String guestId, HttpServletRequest request) {
+
+        Event event = eventService.invite(eventId, guestId);
+        return ResponseEntity.ok(event);
     }
 
+    private UserDetails getUserDetails(HttpServletRequest request) {
+        String authorization = request.getHeader("Authorization");
+        String email = authorization.substring(0, authorization.lastIndexOf(":"));
+        String password = authorization.substring(authorization.lastIndexOf(":") + 1, authorization.length());
+        return new UserDetails(email, password);
+    }
 
+    private boolean isAutenticated(UserDetails userDetails) {
+        return userDetailsService.isAutenticated(userDetails);
+    }
 }
