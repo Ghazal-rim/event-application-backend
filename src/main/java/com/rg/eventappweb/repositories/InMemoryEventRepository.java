@@ -2,6 +2,7 @@ package com.rg.eventappweb.repositories;
 
 
 import com.rg.eventappweb.models.Event;
+import com.rg.eventappweb.models.Guest;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -19,6 +20,11 @@ public class InMemoryEventRepository implements EventRepository {
 	}
 
 	@Override
+	public void update(Event event) {
+
+	}
+
+	@Override
 	public List<Event> findAll() {
 
 		return eventList;
@@ -28,6 +34,12 @@ public class InMemoryEventRepository implements EventRepository {
 	@Override
 	public Event findById(String id) {
 		return eventList.stream().filter(event -> event.getId().equals(id)).findFirst().orElse(new Event());
+	}
+
+	@Override
+	public void addGuest(String eventId, String guestId) {
+		// TODO not yet implemented
+		throw new UnsupportedOperationException("not yet implemented");
 	}
 
 }
